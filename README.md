@@ -1,1 +1,1 @@
-# hackathon-meteo-france
+# Hackathon Météo-france
