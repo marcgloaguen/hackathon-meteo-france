@@ -1,0 +1,1 @@
+Given a chat history and the latest user question which might reference context in the chat history, formulate a standalone question just reformulate it if needed and otherwise return it as is.
