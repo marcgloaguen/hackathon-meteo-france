@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+from datetime import date
 
 # """
 # Titre de l'application
@@ -21,6 +22,21 @@ def onglet1():
     st.title('Accueil')
     st.write('Contenu de la page Accueil')
     st.text(openai_key)
+    d_day = date.today().strftime("%d/%m/%Y")
+    st.write(d_day)
+    
+    #division de la page en 2 colonnes
+    col1, col2 = st.columns(2)
+    
+    #vignette Jour-J avec texte
+    with col1:
+        #st.image("image1.jpg", caption="Vignette Jour-J")
+        st.write("Texte sous la vignette")
+    
+    #vignette Jour J+1 AVEC TEXTE
+    with col2:
+        #st.image("image2.jpg", caption="Vignette Jour-J+1")
+        st.write("Texte sous la vignette")
     
     
 # ONGLET 2 = Présentation
