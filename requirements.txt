@@ -1,0 +1,9 @@
+langchain==0.1.13
+langchain-community==0.0.29
+langchain-core==0.1.33
+langchain-experimental==0.0.55
+langchain-mistralai==0.0.5
+langchain-openai==0.0.8
+langchain-pinecone==0.0.3
+langchainhub==0.1.15
+streamlit==1.33.0
