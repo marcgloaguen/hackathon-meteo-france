@@ -7,6 +7,12 @@ from streamlit_option_menu import option_menu
 #st.title('Chatbot et Vigilance Météo France')
 
 # """
+# Sidebar : les champs Clés APIs
+# """
+openai_key = st.sidebar.text_input('OpenAI key')
+vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
+
+# """
 # Sidebar : création des onglets
 # """
 
@@ -14,15 +20,19 @@ from streamlit_option_menu import option_menu
 def onglet1():
     st.title('Accueil')
     st.write('Contenu de la page Accueil')
+    st.text(openai_key)
+    
     
 # ONGLET 2 = Présentation
 def onglet2():
     st.title('Présentation')
     st.write('Contenu de la page Présentation')
+    st.text(openai_key)
 # ONGLET 3 = Chatbot
 def onglet3():
     st.title('💬 Chatbot')
     st.write('Contenu de la page Chatbot')
+    st.text(openai_key)
 
 
 # """
@@ -45,8 +55,3 @@ if __name__ == '__main__':
 
 
 
-# """
-# Sidebar : les champs Clés APIs
-# """
-openai_key = st.sidebar.text_input('OpenAI key')
-vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
