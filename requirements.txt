@@ -7,3 +7,4 @@ langchain-openai==0.0.8
 langchain-pinecone==0.0.3
 langchainhub==0.1.15
 streamlit==1.33.0
+requests~=2.31.0
