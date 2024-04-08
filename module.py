@@ -2,7 +2,7 @@ import requests
 from langchain_openai import OpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-
+import os
 def vignettenationale(vigilence_api_key: str, day: str):
     """
 
@@ -49,7 +49,8 @@ def extract_news(vigilence_api_key: str) -> list:
 
 
 def gpt_from_api(api_openai: str):
-    llm = OpenAI(model_name="gpt-3.5-turbo-instruct", api_openai=api_openai)
+    os.environ["OPENAI_API_KEY"] = api_openai
+    llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
     return llm
 
 

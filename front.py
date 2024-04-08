@@ -28,7 +28,6 @@ vigilance_key = os.environ["VIGILENCE_API_KEY"]
 def onglet1():
     st.title('Accueil')
     st.write('Contenu de la page Accueil')
-    st.text(openai_key)
     d_day = date.today().strftime("%d/%m/%Y")
     st.write(d_day)
     if openai_key :
