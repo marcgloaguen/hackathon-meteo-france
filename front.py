@@ -3,19 +3,34 @@ from streamlit_option_menu import option_menu
 from datetime import date
 import locale 
 from module import vignettenationale, gpt_from_api, extract_news, summarize_news
+from langchain_community.chat_message_histories import (
+    StreamlitChatMessageHistory,
+)
+from langchain_core.runnables.history import RunnableWithMessageHistory
+
 from dotenv import load_dotenv
 import os
-load_dotenv()
 
+load_dotenv()
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
-# """
-# Titre de l'application
-# """
-#st.title('Chatbot et Vigilance Météo France')
+# Stocker l'historique des messages
+history = StreamlitChatMessageHistory(key="chat_messages")
+
+msgs = StreamlitChatMessageHistory(key="special_app_key")
+if len(msgs.messages) == 0:
+    msgs.add_ai_message("How can I help you?")
+    
+# Chaine d'actions
+chain_with_history = RunnableWithMessageHistory(
+    chain,
+    lambda session_id: msgs,  
+    input_messages_key="question",
+    history_messages_key="history",
+)
 
 # """
-# Sidebar : les champs Clés APIs
+# Sidebar : Clés APIs
 # """
 openai_key = st.sidebar.text_input('OpenAI key')
 openai_key = os.environ["OPENAI_API_KEY"]
@@ -27,63 +42,46 @@ if openai_key:
     llm = gpt_from_api(openai_key)
     summary = summarize_news(llm, news)
 else:
-    summary=""
-
-vignetteJ=vignettenationale(vigilance_key, "J")
-vignetteJ1=vignettenationale(vigilance_key, "J1")
-
+    summary = ""
 
 
 # """
-# Sidebar : création des onglets
+# Sidebar : Informations générales
 # """
-
-# ONGLET 1 = Informations Vigilance
-def onglet1():
-    st.title('Informations Vigilance')
-    st.write("")
-    day = date.today().strftime("%A %d").capitalize()
-    month = date.today().strftime("%B %Y").capitalize()
-    st.write(f"{day} {month}")
-    st.write(summary)
-    
-    #division de la page en 2 colonnes
-    col1, col2 = st.columns(2)
-    
-    #vignette Jour-J avec texte
-    with col1:
-        st.image(vignetteJ, caption = "Aujourd'hui")
-    
-    
-    #vignette Jour J+1 AVEC TEXTE
-    with col2:
-        st.image(vignetteJ1, caption = "Demain")
-    
-    
-    
-
-# ONGLET 2 = Chatbot
-def onglet2():
-    st.title('💬 Chatbot')
-    st.write('Contenu de la page Chatbot')
-    st.text(openai_key)
-
+side = st.sidebar
+day = date.today().strftime("%A %d").capitalize()
+month = date.today().strftime("%B %Y").capitalize()
+with side:
+    with st.spinner():
+        st.write('Informations générales')
+        st.write(f"{day} {month}")
+        st.write(summary)
+        st.write('')
+        st.write('Pour plus d\'informations posez vos questions à notre Chatbot')
+        st.write('')
+        st.write('https://vigilance.meteofrance.fr/fr')
 
 # """
-# Sidebar : affichage des onglets
+# Titre de l'application
 # """
-def main():
-    with st.sidebar:
-        selected_onglets = option_menu('', ['Informations Vigilance', 'Chatbot'],
-                icons=['house', 'gear', 'gear'], menu_icon='cast', default_index=0)
+st.title('💬 Chatbot Vigilance Météo France')
 
-    if selected_onglets == 'Informations Vigilance':
-        onglet1()
-    else:
-        onglet2()
 
-if __name__ == '__main__':
-    main()
+
+# Affichage des messages
+for msg in msgs.messages:
+    st.chat_message(msg.type).write(msg.content)
+
+# Interactions entre utilisateurs et chatbot
+if prompt := st.chat_input():
+    st.chat_message("human").write(prompt)
+    config = {"configurable": {"session_id": "any"}}
+    response = chain_with_history.invoke({"question": prompt}, config)
+    st.chat_message("ai").write(response.content)
+
+
+
+
 
 
 
