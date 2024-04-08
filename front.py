@@ -1,48 +1,58 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
+
+from langchain_openai import ChatOpenAI
 from datetime import date
+
 import locale 
-from module import vignettenationale, gpt_from_api, extract_news, summarize_news
-from langchain_community.chat_message_histories import (
-    StreamlitChatMessageHistory,
-)
+
+from module import extract_news, summarize_news, create_retriever, rag_chain_with_history
+
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
+vigilance_key = os.environ["VIGILENCE_API_KEY"]
+openai_key = os.environ["OPENAI_API_KEY"]
+
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
+
+# Import llm, retriever & rag
+llm = ChatOpenAI(model_name="gpt-3.5-turbo")
+retriever = create_retriever()
+chain = rag_chain_with_history(llm, retriever)
+
 
 # Stocker l'historique des messages
 history = StreamlitChatMessageHistory(key="chat_messages")
 
 msgs = StreamlitChatMessageHistory(key="special_app_key")
 if len(msgs.messages) == 0:
-    msgs.add_ai_message("How can I help you?")
+    msgs.add_ai_message("Comment puis-je vous aider ?")
     
 # Chaine d'actions
 chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: msgs,  
     input_messages_key="question",
-    history_messages_key="history",
+    history_messages_key="chat_history",
 )
 
 # """
 # Sidebar : Clés APIs
 # """
-openai_key = st.sidebar.text_input('OpenAI key')
-openai_key = os.environ["OPENAI_API_KEY"]
+#openai_key = st.sidebar.text_input('OpenAI key')
+
 #vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
-vigilance_key = os.environ["VIGILENCE_API_KEY"]
 
 if openai_key:
-    news = extract_news(vigilance_key)
-    llm = gpt_from_api(openai_key)
-    summary = summarize_news(llm, news)
+    if 'sumary' not in st.session_state:
+        news = extract_news(vigilance_key)
+        st.session_state['sumary'] = summarize_news(llm, news)
 else:
-    summary = ""
+    st.session_state['sumary'] = ""
 
 
 # """
@@ -53,11 +63,11 @@ day = date.today().strftime("%A %d").capitalize()
 month = date.today().strftime("%B %Y").capitalize()
 with side:
     with st.spinner():
-        st.write('Informations générales')
-        st.write(f"{day} {month}")
-        st.write(summary)
+        st.title('Informations générales')
+        st.write(f"**{day} {month}**")
+        st.write(st.session_state['sumary'].content)
         st.write('')
-        st.write('Pour plus d\'informations posez vos questions à notre Chatbot')
+        st.write('*Pour plus d\'informations posez vos questions à notre Chatbot*')
         st.write('')
         st.write('https://vigilance.meteofrance.fr/fr')
 
@@ -70,14 +80,14 @@ st.title('💬 Chatbot Vigilance Météo France')
 
 # Affichage des messages
 for msg in msgs.messages:
-    st.chat_message(msg.type).write(msg.content)
+    st.chat_message(msg.type, avatar='🤖').write(msg.content)
 
 # Interactions entre utilisateurs et chatbot
 if prompt := st.chat_input():
-    st.chat_message("human").write(prompt)
+    st.chat_message("human", avatar='🧑‍💻').write(prompt)
     config = {"configurable": {"session_id": "any"}}
-    response = chain_with_history.invoke({"question": prompt}, config)
-    st.chat_message("ai").write(response.content)
+    response = chain_with_history.stream({"question": prompt, "vigilance":st.session_state['sumary']}, config)
+    st.chat_message("ai", avatar='🤖').write_stream(response)
 
 
 
