@@ -19,8 +19,21 @@ locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 # """
 openai_key = st.sidebar.text_input('OpenAI key')
 openai_key = os.environ["OPENAI_API_KEY"]
-vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
+#vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
 vigilance_key = os.environ["VIGILENCE_API_KEY"]
+
+if openai_key:
+    news = extract_news(vigilance_key)
+    llm = gpt_from_api(openai_key)
+    summary = summarize_news(llm, news)
+else:
+    summary=""
+
+vignetteJ=vignettenationale(vigilance_key, "J")
+vignetteJ1=vignettenationale(vigilance_key, "J1")
+
+
+
 # """
 # Sidebar : création des onglets
 # """
@@ -32,25 +45,19 @@ def onglet1():
     day = date.today().strftime("%A %d").capitalize()
     month = date.today().strftime("%B %Y").capitalize()
     st.write(f"{day} {month}")
-    if openai_key :
-        news = extract_news(vigilance_key)
-        llm = gpt_from_api(openai_key)
-        summary = summarize_news(llm, news)
-        st.write(summary)
-    else :
-        st.write("")
+    st.write(summary)
     
     #division de la page en 2 colonnes
     col1, col2 = st.columns(2)
     
     #vignette Jour-J avec texte
     with col1:
-        st.image(vignettenationale(vigilance_key, "J"), caption = "Aujourd'hui")
+        st.image(vignetteJ, caption = "Aujourd'hui")
     
     
     #vignette Jour J+1 AVEC TEXTE
     with col2:
-        st.image(vignettenationale(vigilance_key, "J1"), caption = "Demain")
+        st.image(vignetteJ1, caption = "Demain")
     
     
     
