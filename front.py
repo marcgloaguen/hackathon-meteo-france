@@ -54,13 +54,9 @@ def onglet1():
     
     
     
-# ONGLET 2 = Présentation
+
+# ONGLET 2 = Chatbot
 def onglet2():
-    st.title('Présentation')
-    st.write('Contenu de la page Présentation')
-    st.text(openai_key)
-# ONGLET 3 = Chatbot
-def onglet3():
     st.title('💬 Chatbot')
     st.write('Contenu de la page Chatbot')
     st.text(openai_key)
@@ -71,15 +67,13 @@ def onglet3():
 # """
 def main():
     with st.sidebar:
-        selected_onglets = option_menu('', ['Informations Vigilance', 'Prédictions', 'Chatbot'],
+        selected_onglets = option_menu('', ['Informations Vigilance', 'Chatbot'],
                 icons=['house', 'gear', 'gear'], menu_icon='cast', default_index=0)
 
     if selected_onglets == 'Informations Vigilance':
         onglet1()
-    elif selected_onglets == 'Prédictions':
-        onglet2()
     else:
-        onglet3()
+        onglet2()
 
 if __name__ == '__main__':
     main()
