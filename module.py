@@ -3,21 +3,26 @@ from langchain_openai import OpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 import os
-def vignettenationale(vigilence_api_key: str, day: str):
-    """
+from dotenv import load_dotenv
+import time
+import os
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import HumanMessage
+from langchain_community.vectorstores import Chroma
+from langchain_community.document_loaders.csv_loader import CSVLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-    :param vigilence_api_key: API KEY FROM meteo.data.gouv
-    :param day: "J or J1"
-    :return: vignettenational
-    """
-    url = f'https://public-api.meteofrance.fr/public/DPVigilance/v1/vignettenationale-{day}/encours'
-    headers = {
-        'accept': '*/*',
-        'apikey': vigilence_api_key
-    }
-    response = requests.get(url, headers=headers)
-    image_bytes = response.content
-    return image_bytes
+load_dotenv()
+
+with open("contextualize_system_prompt.txt", "r") as files:
+    contextualize_system_prompt = files.read()
+
+with open("instruct.txt", "r") as files:
+    instruct = files.read()
 
 
 def extract_text_items(data):
@@ -48,12 +53,6 @@ def extract_news(vigilence_api_key: str) -> list:
     return news
 
 
-def gpt_from_api(api_openai: str):
-    os.environ["OPENAI_API_KEY"] = api_openai
-    llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
-    return llm
-
-
 def summarize_news(llm, news: list) -> str:
     template = """
     Write a concise summary in french of the following:
@@ -68,3 +67,49 @@ def summarize_news(llm, news: list) -> str:
     )
     summary = chain.invoke(news)
     return summary
+
+
+def create_retriever(path: str = "data/Vigilance Table.csv"):
+    loader = CSVLoader(file_path=path)
+    data = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    splits = text_splitter.split_documents(data)
+    vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+    retriever = vectorstore.as_retriever()
+    return retriever
+
+
+def contextualize_chain(llm):
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", contextualize_system_prompt),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
+    chain = prompt | llm | StrOutputParser()
+    return chain
+
+
+def rag_chain_with_history(llm, retriever):
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", instruct),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
+
+    def contextualized_question(input: dict):
+        if input.get("chat_history"):
+            return contextualize_chain(llm)
+        else:
+            return input["question"]
+
+    chain = (
+            RunnablePassthrough.assign(context=contextualized_question | retriever)
+            | prompt
+            | llm
+    )
+
+    return chain
