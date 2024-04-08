@@ -3,21 +3,6 @@ from langchain_openai import OpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 import os
-def vignettenationale(vigilence_api_key: str, day: str):
-    """
-
-    :param vigilence_api_key: API KEY FROM meteo.data.gouv
-    :param day: "J or J1"
-    :return: vignettenational
-    """
-    url = f'https://public-api.meteofrance.fr/public/DPVigilance/v1/vignettenationale-{day}/encours'
-    headers = {
-        'accept': '*/*',
-        'apikey': vigilence_api_key
-    }
-    response = requests.get(url, headers=headers)
-    image_bytes = response.content
-    return image_bytes
 
 
 def extract_text_items(data):
@@ -46,12 +31,6 @@ def extract_news(vigilence_api_key: str) -> list:
     news = list(set(extract_text_items(data)))
 
     return news
-
-
-def gpt_from_api(api_openai: str):
-    os.environ["OPENAI_API_KEY"] = api_openai
-    llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
-    return llm
 
 
 def summarize_news(llm, news: list) -> str:
