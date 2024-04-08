@@ -56,7 +56,9 @@ def gpt_from_api(api_openai: str):
 
 def summarize_news(llm, news: list) -> str:
     template = """
-    Fait un résumé concis des informations suivantes : {informations}
+    Write a concise summary in french of the following:
+    "{informations}"
+    CONCISE SUMMARY:
     """
     prompt = PromptTemplate.from_template(template)
     chain = (
