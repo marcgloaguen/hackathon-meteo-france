@@ -5,7 +5,7 @@ from langchain_core.runnables import RunnablePassthrough
 import os
 from dotenv import load_dotenv
 import time
-import os
+
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import OpenAIEmbeddings
