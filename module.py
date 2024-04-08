@@ -3,9 +3,9 @@ from langchain_openai import OpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
-
 def vignettenationale(vigilence_api_key: str, day: str):
     """
+
     :param vigilence_api_key: API KEY FROM meteo.data.gouv
     :param day: "J or J1"
     :return: vignettenational
