@@ -5,6 +5,8 @@ from datetime import date
 
 import locale 
 
+from streamlit_extras.stylable_container import stylable_container 
+
 from module import extract_news, summarize_news, create_retriever, rag_chain_with_history
 
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
@@ -59,35 +61,51 @@ else:
 # Sidebar : Informations générales
 # """
 side = st.sidebar
+# Ajout du logo
+side.image('logo.png')
+#Ajout de la date
 day = date.today().strftime("%A %d").capitalize()
 month = date.today().strftime("%B %Y").capitalize()
 with side:
     with st.spinner():
-        st.title('Informations générales')
-        st.write(f"**{day} {month}**")
+        st.title('📌Informations générales')
+        st.write(f"📆**{day} {month}**")
         st.write(st.session_state['sumary'].content)
         st.write('')
-        st.write('*Pour plus d\'informations posez vos questions à notre Chatbot*')
+        st.write('🖐️*Pour plus d\'informations posez vos questions à notre Chatbot*')
         st.write('')
-        st.write('https://vigilance.meteofrance.fr/fr')
+        st.write('🔗https://vigilance.meteofrance.fr/fr')
 
 # """
 # Titre de l'application
 # """
-st.title('💬 Chatbot Vigilance Météo France')
 
 
+# Définition du style du conteneur
+container_style = """
+    {
+        border: 5px solid #c71585;
+        border-radius: 20px;
+        padding: 40px;
+        background-color: white;
+        width:800px;
+    }
+"""
+with stylable_container(
+    key="chatbot_container",
+    css_styles=container_style
+):
+    st.title('💬 Chatbot Vigilance Météo France')
+    # Affichage des messages
+    for msg in msgs.messages:
+        st.chat_message(msg.type, avatar='🤖').write(msg.content)
 
-# Affichage des messages
-for msg in msgs.messages:
-    st.chat_message(msg.type, avatar='🤖').write(msg.content)
-
-# Interactions entre utilisateurs et chatbot
-if prompt := st.chat_input():
-    st.chat_message("human", avatar='🧑‍💻').write(prompt)
-    config = {"configurable": {"session_id": "any"}}
-    response = chain_with_history.stream({"question": prompt, "vigilance":st.session_state['sumary']}, config)
-    st.chat_message("ai", avatar='🤖').write_stream(response)
+    # Interactions entre utilisateurs et chatbot
+    if prompt := st.chat_input("Posez votre question"):
+        st.chat_message("human", avatar='🧑‍💻').write(prompt)
+        config = {"configurable": {"session_id": "any"}}
+        response = chain_with_history.stream({"question": prompt, "vigilance":st.session_state['sumary']}, config)
+        st.chat_message("ai", avatar='🤖').write_stream(response)
 
 
 
