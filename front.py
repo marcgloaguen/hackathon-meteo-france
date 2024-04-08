@@ -1,6 +1,12 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from datetime import date
+from module import vignettenationale, gpt_from_api, extract_news, summarize_news
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+
 
 # """
 # Titre de l'application
@@ -11,8 +17,9 @@ from datetime import date
 # Sidebar : les champs Clés APIs
 # """
 openai_key = st.sidebar.text_input('OpenAI key')
+openai_key = os.environ["OPENAI_API_KEY"]
 vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
-
+vigilance_key = os.environ["VIGILENCE_API_KEY"]
 # """
 # Sidebar : création des onglets
 # """
@@ -24,19 +31,26 @@ def onglet1():
     st.text(openai_key)
     d_day = date.today().strftime("%d/%m/%Y")
     st.write(d_day)
+    if openai_key :
+        news = extract_news(vigilance_key)
+        llm = gpt_from_api(openai_key)
+        summary = summarize_news(llm, news)
+        st.write(summary)
+    else :
+        st.write("")
     
     #division de la page en 2 colonnes
     col1, col2 = st.columns(2)
     
     #vignette Jour-J avec texte
     with col1:
-        #st.image("image1.jpg", caption="Vignette Jour-J")
-        st.write("Texte sous la vignette")
+        st.image(vignettenationale(vigilance_key, "J"))
+    
     
     #vignette Jour J+1 AVEC TEXTE
     with col2:
-        #st.image("image2.jpg", caption="Vignette Jour-J+1")
-        st.write("Texte sous la vignette")
+        st.image(vignettenationale(vigilance_key, "J1"))
+    
     
     
 # ONGLET 2 = Présentation
