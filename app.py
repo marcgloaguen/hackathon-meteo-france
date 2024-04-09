@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_extras.stylable_container import stylable_container
 
-from langchain_openai import ChatOpenAI
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from functions import extract_news, summarize_news, create_retriever, rag_chain_with_history
@@ -53,7 +52,7 @@ def sidebar(llm):
     ############################################################################
 
 
-def main_page(llm):
+def main_page(llm, embedding):
 
     """
     Display the main chat page and handle user interaction.
@@ -74,7 +73,7 @@ def main_page(llm):
 
     # Create retriever and chatbot chain with history
 
-    retriever = create_retriever()
+    retriever = create_retriever(embedding)
     chain = rag_chain_with_history(llm, retriever)
     chain_with_history = RunnableWithMessageHistory(
         chain,
@@ -132,11 +131,21 @@ def main():
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
     # Initialize ChatOpenAI model
-    gpt_turbo = ChatOpenAI(model_name="gpt-3.5-turbo")
+
+    from langchain_community.chat_models import ChatOllama
+    from langchain_community.embeddings import OllamaEmbeddings
+    model = ChatOllama(model="mistral")
+    embedding = OllamaEmbeddings(model="mistral")
+
+
+    # from langchain_openai import ChatOpenAI
+    # from langchain_openai import OpenAIEmbeddings
+    # model = ChatOpenAI(model_name="gpt-3.5-turbo")
+    # embedding = OpenAIEmbeddings()
 
     # Display sidebar and main chat page
-    sidebar(gpt_turbo)
-    main_page(gpt_turbo)
+    sidebar(model)
+    main_page(model, embedding)
 
 
 if __name__ == "__main__":

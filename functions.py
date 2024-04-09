@@ -8,7 +8,7 @@ import time
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_openai import OpenAIEmbeddings
+
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import HumanMessage
@@ -69,12 +69,12 @@ def summarize_news(llm, news: list) -> str:
     return summary
 
 
-def create_retriever(path: str = "data/Vigilance Table.csv"):
+def create_retriever(embedding, path: str = "data/Vigilance Table.csv"):
     loader = CSVLoader(file_path=path)
     data = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(data)
-    vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+    vectorstore = Chroma.from_documents(documents=splits, embedding=embedding)
     retriever = vectorstore.as_retriever()
     return retriever
 
