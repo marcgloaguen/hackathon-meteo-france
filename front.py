@@ -15,6 +15,8 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from dotenv import load_dotenv
 import os
 
+st.set_page_config(page_title = "Météo France | Chatbot", page_icon = ":frog:")
+
 load_dotenv()
 vigilance_key = os.environ["VIGILENCE_API_KEY"]
 openai_key = os.environ["OPENAI_API_KEY"]
@@ -72,7 +74,7 @@ with side:
         st.write(f"📆**{day} {month}**")
         st.write(st.session_state['sumary'].content)
         st.write('')
-        st.write('🖐️*Pour plus d\'informations posez vos questions à notre Chatbot*')
+        st.write(':robot: *Pour plus d\'informations posez vos questions à notre Chatbot*')
         st.write('')
         st.write('🔗https://vigilance.meteofrance.fr/fr')
 
@@ -86,7 +88,7 @@ container_style = """
     {
         border: 3px solid #c71585;
         border-radius: 20px;
-        padding: 40px;
+        padding: 20px;
         background-color: white;
         width:800px;
     }
@@ -96,16 +98,17 @@ with stylable_container(
     css_styles=container_style
 ):
     st.title('💬 Chatbot Vigilance Météo France')
+    chat_msg = st.container(border = True, height = 500)
     # Affichage des messages
     for msg in msgs.messages:
-        st.chat_message(msg.type, avatar='🤖').write(msg.content)
+        chat_msg.chat_message(msg.type, avatar=':frog:').write(msg.content)
 
     # Interactions entre utilisateurs et chatbot
     if prompt := st.chat_input("Posez votre question"):
-        st.chat_message("human", avatar='🧑‍💻').write(prompt)
+        chat_msg.chat_message("human", avatar='🧑‍💻').write(prompt)
         config = {"configurable": {"session_id": "any"}}
         response = chain_with_history.stream({"question": prompt, "vigilance":st.session_state['sumary']}, config)
-        st.chat_message("ai", avatar='🤖').write_stream(response)
+        chat_msg.chat_message("ai", avatar=':frog:').write_stream(response)
 
 
 
