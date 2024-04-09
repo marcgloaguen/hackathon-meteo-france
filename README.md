@@ -4,6 +4,7 @@
 
 Ce projet est un chatbot développé pour aider les utilisateurs pendant les intempéries et les vigilances météorologiques. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations précises sur les conditions météorologiques et les alertes émises. Les utilisateurs peuvent poser des questions sur les prévisions météorologiques actuelles, les avertissements météo, ainsi que recevoir des conseils de sécurité en cas de vigilance.
 
+L'objectif est de fournir un point centralisé pour obtenir toutes les informations nécessaires liées à la météo et aux conditions d'urgence.
 
 ## Fonctionnalités
 
@@ -18,8 +19,8 @@ Ce projet est un chatbot développé pour aider les utilisateurs pendant les int
 git clone https://github.com/marcgloaguen/hackathon-meteo-france.git
 ```
 2. Accédez au répertoire du projet :
-````bash
-cd chatbot-aide-intemperies
+````bash la de
+cd hackathon-meteo-france
 ````
 3. Configuration des clés API. Créez un fichier `.env` à la racine du projet et ajoutez-y les clés API nécessaires :
 
