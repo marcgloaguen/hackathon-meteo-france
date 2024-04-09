@@ -1,118 +1,144 @@
 import streamlit as st
+from streamlit_extras.stylable_container import stylable_container
 
 from langchain_openai import ChatOpenAI
-from datetime import date
-
-import locale 
-
-from streamlit_extras.stylable_container import stylable_container 
-
-from module import extract_news, summarize_news, create_retriever, rag_chain_with_history
-
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from functions import extract_news, summarize_news, create_retriever, rag_chain_with_history
 
+from datetime import date
+import locale
 from dotenv import load_dotenv
 import os
 
-st.set_page_config(page_title = "Météo France | Chatbot", page_icon = ":frog:")
-
 load_dotenv()
-vigilance_key = os.environ["VIGILENCE_API_KEY"]
-openai_key = os.environ["OPENAI_API_KEY"]
-
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
-# Import llm, retriever & rag
-llm = ChatOpenAI(model_name="gpt-3.5-turbo")
-retriever = create_retriever()
-chain = rag_chain_with_history(llm, retriever)
 
+def sidebar(llm):
 
-# Stocker l'historique des messages
-history = StreamlitChatMessageHistory(key="chat_messages")
+    """
+    Create and display the sidebar with general information and news summary.
 
-msgs = StreamlitChatMessageHistory(key="special_app_key")
-if len(msgs.messages) == 0:
-    msgs.add_ai_message("Comment puis-je vous aider ?")
-    
-# Chaine d'actions
-chain_with_history = RunnableWithMessageHistory(
-    chain,
-    lambda session_id: msgs,  
-    input_messages_key="question",
-    history_messages_key="chat_history",
-)
+    Parameters:
+    - llm: Language model for summarizing news.
+    """
 
-# """
-# Sidebar : Clés APIs
-# """
-#openai_key = st.sidebar.text_input('OpenAI key')
+    ############################################################################
 
-#vigilance_key = st.sidebar.text_input('Bulletin Vigilance key')
+    # Display current date and summarized news in the sidebar
 
-if openai_key:
+    jour = date.today().strftime("%A %d").capitalize()
+    mois_annee = date.today().strftime("%B %Y").capitalize()
+
+    # Check if news summary is not already stored in session state, if not, summarize news
+
     if 'sumary' not in st.session_state:
+        vigilance_key = os.environ["VIGILENCE_API_KEY"]
         news = extract_news(vigilance_key)
         st.session_state['sumary'] = summarize_news(llm, news)
-else:
-    st.session_state['sumary'] = ""
 
+    ############################################################################
 
-# """
-# Sidebar : Informations générales
-# """
-side = st.sidebar
-# Ajout du logo
-side.image('logo.png')
-#Ajout de la date
-day = date.today().strftime("%A %d").capitalize()
-month = date.today().strftime("%B %Y").capitalize()
-with side:
-    with st.spinner():
-        st.title('📌Informations générales')
-        st.write(f"📆**{day} {month}**")
+    # Create sidebar elements
+
+    with st.sidebar:
+        st.image('logo.png')
+        st.title('📌 Informations générales')
+        st.write(f"📆 **{jour} {mois_annee}**")
         st.write(st.session_state['sumary'].content)
         st.write('')
-        st.write(':robot: *Pour plus d\'informations posez vos questions à notre Chatbot*')
+        st.write('🗣️ *Pour plus d\'informations posez vos questions à notre Chatbot*')
         st.write('')
-        st.write('🔗https://vigilance.meteofrance.fr/fr')
+        st.write('🔗 https://vigilance.meteofrance.fr/fr')
 
-# """
-# Titre de l'application
-# """
+    ############################################################################
 
 
-# Définition du style du conteneur
-container_style = """
-    {
-        border: 3px solid #c71585;
-        border-radius: 20px;
-        padding: 20px;
-        background-color: white;
-        width:800px;
-    }
-"""
-with stylable_container(
-    key="chatbot_container",
-    css_styles=container_style
-):
-    st.title('💬 Chatbot Vigilance Météo France')
-    chat_msg = st.container(border = True, height = 500)
-    # Affichage des messages
-    for msg in msgs.messages:
-        chat_msg.chat_message(msg.type, avatar=':frog:').write(msg.content)
+def main_page(llm):
 
-    # Interactions entre utilisateurs et chatbot
-    if prompt := st.chat_input("Posez votre question"):
-        chat_msg.chat_message("human", avatar='🧑‍💻').write(prompt)
-        config = {"configurable": {"session_id": "any"}}
-        response = chain_with_history.stream({"question": prompt, "vigilance":st.session_state['sumary']}, config)
-        chat_msg.chat_message("ai", avatar=':frog:').write_stream(response)
+    """
+    Display the main chat page and handle user interaction.
+
+    Parameters:
+    - llm: Language model for chatbot responses.
+    """
+
+    ############################################################################
+
+    # Initialize chat message history, add initial AI message if history is empty
+
+    msgs = StreamlitChatMessageHistory(key="chat_messages")
+    if len(msgs.messages) == 0:
+        msgs.add_ai_message("Comment puis-je vous aider ?")
+
+    ############################################################################
+
+    # Create retriever and chatbot chain with history
+
+    retriever = create_retriever()
+    chain = rag_chain_with_history(llm, retriever)
+    chain_with_history = RunnableWithMessageHistory(
+        chain,
+        lambda session_id: msgs,
+        input_messages_key="question",
+        history_messages_key="chat_history")
+
+    ############################################################################
+
+    # Define CSS style for chat container
+
+    container_style = """
+        {
+            border: 3px solid #c71585;
+            border-radius: 20px;
+            padding: 20px;
+            background-color: white;
+            width:800px;
+        }
+    """
+
+    # Create chatbot container with specified CSS style
+    with stylable_container(
+            key="chatbot_container",
+            css_styles=container_style
+    ):
+        st.title('💬 Chatbot Vigilance Météo France')
+        msg_container = st.container(border=True, height=500)
+
+    ############################################################################
+
+    # Display chat history in the message container
+
+        for msg in msgs.messages:
+            msg_container.chat_message(msg.type, avatar='🐸').write(msg.content)
+
+    ############################################################################
+
+    # Allow user to input questions and receive responses from the chatbot
+
+        if prompt := st.chat_input("Posez votre question"):
+            msg_container.chat_message("human", avatar='👤').write(prompt)
+            response = chain_with_history.stream(
+                input={"question": prompt, "vigilance": st.session_state['sumary']},
+                config={"configurable": {"session_id": "any"}}
+            )
+            msg_container.chat_message("ai", avatar='🐸').write_stream(response)
+
+    ############################################################################
 
 
+def main():
+    # Set page configuration
+    st.set_page_config(page_title="Météo France | Chatbot", page_icon="🐸")
+
+    # Initialize ChatOpenAI model
+    gpt_turbo = ChatOpenAI(model_name="gpt-3.5-turbo")
+
+    # Display sidebar and main chat page
+    sidebar(gpt_turbo)
+    main_page(gpt_turbo)
 
 
-
-
-
+if __name__ == "__main__":
+    main()
