@@ -131,6 +131,7 @@ def main_page(llm):
 def main():
     # Set page configuration
     st.set_page_config(page_title="Météo France | Chatbot", page_icon="🐸")
+    locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
     # Initialize ChatOpenAI model
     gpt_turbo = ChatOpenAI(model_name="gpt-3.5-turbo")
