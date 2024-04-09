@@ -1,5 +1,5 @@
 # Hackathon Météo France
-<img src=screenshot.jpeg alt="Screenshot" style="max-height: 500px;" />
+<img src=screenshot.jpeg alt="Screenshot" style="max-height: 300px;" />
 
 
 ## Chatbot d'Aide aux Intempéries et Vigilances Météo
