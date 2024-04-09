@@ -4,7 +4,7 @@
 
 Ce projet est un chatbot développé pour aider les utilisateurs pendant les intempéries et les vigilances météorologiques. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations précises sur les conditions météorologiques et les alertes émises. Les utilisateurs peuvent poser des questions sur les prévisions météorologiques actuelles, les avertissements météo, ainsi que recevoir des conseils de sécurité en cas de vigilance.
 
-L'objectif est de fournir un point centralisé pour obtenir toutes les informations nécessaires liées à la météo et aux conditions d'urgence.
+L'objectif est de fournir un point centralisé pour obtenir toutes les informations nécessaires liées à la météo, aux conditions d'urgence, à la prévention et à la sensibilisation aux risques.
 
 ## Fonctionnalités
 
