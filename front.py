@@ -84,7 +84,7 @@ with side:
 # Définition du style du conteneur
 container_style = """
     {
-        border: 5px solid #c71585;
+        border: 3px solid #c71585;
         border-radius: 20px;
         padding: 40px;
         background-color: white;
