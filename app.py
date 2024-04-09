@@ -12,8 +12,8 @@ import os
 
 load_dotenv()
 
-def sidebar(llm):
 
+def sidebar(llm):
     """
     Create and display the sidebar with general information and news summary.
 
@@ -53,7 +53,6 @@ def sidebar(llm):
 
 
 def main_page(llm, embedding):
-
     """
     Display the main chat page and handle user interaction.
 
@@ -103,16 +102,16 @@ def main_page(llm, embedding):
         st.title('💬 Chatbot Vigilance Météo France')
         msg_container = st.container(border=True, height=500)
 
-    ############################################################################
+        ############################################################################
 
-    # Display chat history in the message container
+        # Display chat history in the message container
 
         for msg in msgs.messages:
             msg_container.chat_message(msg.type, avatar='🐸').write(msg.content)
 
-    ############################################################################
+        ############################################################################
 
-    # Allow user to input questions and receive responses from the chatbot
+        # Allow user to input questions and receive responses from the chatbot
 
         if prompt := st.chat_input("Posez votre question"):
             msg_container.chat_message("human", avatar='👤').write(prompt)
@@ -130,18 +129,16 @@ def main():
     st.set_page_config(page_title="Météo France | Chatbot", page_icon="🐸")
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
-    # Initialize ChatOpenAI model
 
-    from langchain_community.chat_models import ChatOllama
-    from langchain_community.embeddings import OllamaEmbeddings
-    model = ChatOllama(model="mistral")
-    embedding = OllamaEmbeddings(model="mistral")
+    # from langchain_community.chat_models import ChatOllama
+    # from langchain_community.embeddings import OllamaEmbeddings
+    # model = ChatOllama(model="mistral")
+    # embedding = OllamaEmbeddings(model="mistral")
 
-
-    # from langchain_openai import ChatOpenAI
-    # from langchain_openai import OpenAIEmbeddings
-    # model = ChatOpenAI(model_name="gpt-3.5-turbo")
-    # embedding = OpenAIEmbeddings()
+    from langchain_openai import ChatOpenAI
+    from langchain_openai import OpenAIEmbeddings
+    model = ChatOpenAI(model_name="gpt-3.5-turbo")
+    embedding = OpenAIEmbeddings()
 
     # Display sidebar and main chat page
     sidebar(model)
