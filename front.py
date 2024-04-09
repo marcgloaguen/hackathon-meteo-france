@@ -12,8 +12,6 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
-
 
 def sidebar(llm):
 
