@@ -15,7 +15,7 @@ Ce projet est un chatbot développé pour aider les utilisateurs pendant les int
 1. Clonez ce dépôt sur votre machine locale :
 
 ```bash
-git clone https://github.com/votre_utilisateur/chatbot-aide-intemperies.git
+git clone https://github.com/marcgloaguen/hackathon-meteo-france.git
 ```
 2. Accédez au répertoire du projet :
 ````bash
