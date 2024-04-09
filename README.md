@@ -1,16 +1,14 @@
 # Hackathon Météo France
-
 ## Chatbot d'Aide aux Intempéries et Vigilances Météo
-
-Ce projet est un chatbot développé pour aider les utilisateurs pendant les intempéries et les vigilances météorologiques. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations précises sur les conditions météorologiques et les alertes émises. Les utilisateurs peuvent poser des questions sur les prévisions météorologiques actuelles, les avertissements météo, ainsi que recevoir des conseils de sécurité en cas de vigilance.
-
-L'objectif est de fournir un point centralisé pour obtenir toutes les informations nécessaires liées à la météo, aux conditions d'urgence, à la prévention et à la sensibilisation aux risques.
+Ce projet est un chatbot développé pour rendre plus facile et plus attrayante l'utilisation du site de Vigilence Météo France, en fournissant aux utilisateurs des informations météorologiques précises et des alertes de vigilance de manière conviviale. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations actualisées sur les conditions météorologiques et les alertes émises. Il vise à simplifier le processus de recherche d'informations météorologiques et de vigilance en permettant aux utilisateurs de poser des questions sur les prévisions météorologiques actuelles, les avertissements météo et de recevoir des conseils de sécurité en cas de vigilance. L'objectif est de fournir un point centralisé et convivial pour obtenir toutes les informations nécessaires liées à la météo et aux conditions d'urgence, tout en offrant une expérience utilisateur améliorée par rapport au site Web de Météo France.
 
 ## Fonctionnalités
 
 - Fournit des informations en temps réel sur les conditions météorologiques et les vigilances émises par Météo France.
 - Permet aux utilisateurs de poser des questions sur les prévisions météorologiques actuelles.
 - Donne des alertes météo et des conseils pour rester en sécurité pendant les intempéries, en particulier en cas de vigilance.
+- Sensibilise les utilisateurs aux risques météorologiques et promeut la prévention en fournissant des conseils et des recommandations appropriés.
+
 ## Installation
 
 1. Clonez ce dépôt sur votre machine locale :
@@ -18,16 +16,16 @@ L'objectif est de fournir un point centralisé pour obtenir toutes les informati
 ```bash
 git clone https://github.com/marcgloaguen/hackathon-meteo-france.git
 ```
-2. Accédez au répertoire du projet :
+1. Accédez au répertoire du projet :
 ````bash la de
 cd hackathon-meteo-france
 ````
-3. Configuration des clés API. Créez un fichier `.env` à la racine du projet et ajoutez-y les clés API nécessaires :
+1. Configuration des clés API. Créez un fichier `.env` à la racine du projet et ajoutez-y les clés API nécessaires :
 
    - `OPENAI_API_KEY` : Clé API OpenAI pour le modèle de langage.
    - `VIGILENCE_API_KEY` : Clé API Météo France pour accéder aux données de vigilance. Vous pouvez obtenir une clé sur [ce site](https://portail-api.meteofrance.fr/web/fr/api/DonneesPubliquesVigilance).
 
-4. Installez les dépendances requises :
+2. Installez les dépendances requises :
 ````bash
 pip install -r requirements.txt
 ````
@@ -38,7 +36,7 @@ pip install -r requirements.txt
 ````bash
 streamlit run app.py
 ````
-3. L'application devrait s'ouvrir dans votre navigateur par défaut. Vous pouvez désormais interagir avec le chatbot pour obtenir des informations météorologiques.
+1. L'application devrait s'ouvrir dans votre navigateur par défaut. Vous pouvez désormais interagir avec le chatbot pour obtenir des informations météorologiques.
 
 ## Auteurs
 
