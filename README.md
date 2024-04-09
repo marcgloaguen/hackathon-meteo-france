@@ -1,6 +1,6 @@
 # Hackathon Météo France
 ## Chatbot d'Aide aux Intempéries et Vigilances Météo
-Ce projet est un chatbot développé pour rendre plus facile et plus attrayante l'utilisation du site de Vigilence Météo France, en fournissant aux utilisateurs des informations météorologiques précises et des alertes de vigilance de manière conviviale. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations actualisées sur les conditions météorologiques et les alertes émises. Il vise à simplifier le processus de recherche d'informations météorologiques et de vigilance en permettant aux utilisateurs de poser des questions sur les prévisions météorologiques actuelles, les avertissements météo et de recevoir des conseils de sécurité en cas de vigilance. L'objectif est de fournir un point centralisé et convivial pour obtenir toutes les informations nécessaires liées à la météo et aux conditions d'urgence, tout en offrant une expérience utilisateur améliorée par rapport au site Web de Météo France.
+Ce projet est un chatbot développé pour rendre plus facile et ludique l'utilisation du site de Vigilence Météo France, en fournissant aux utilisateurs des informations météorologiques précises et des alertes de vigilance de manière conviviale. Le chatbot utilise les données en temps réel de Météo France pour fournir des informations actualisées sur les conditions météorologiques et les alertes émises. Il vise à simplifier le processus de recherche d'informations météorologiques et de vigilance en permettant aux utilisateurs de poser des questions sur les prévisions météorologiques actuelles, les avertissements météo et de recevoir des conseils de sécurité en cas de vigilance. L'objectif est de fournir un point centralisé et convivial pour obtenir toutes les informations nécessaires liées à la météo et aux conditions d'urgence, tout en offrant une expérience utilisateur améliorée par rapport au site Web de Météo France.
 
 ## Fonctionnalités
 
@@ -63,3 +63,4 @@ streamlit run app.py
 
 - [Jeanne Hoffmann](https://github.com/Jemaveh)
 - [Marc Gloaguen](https://github.com/marcgloaguen)
+

@@ -100,7 +100,7 @@ def main_page(llm, embedding):
             css_styles=container_style
     ):
         st.title('💬 Chatbot Vigilance Météo France')
-        msg_container = st.container(border=True, height=500)
+        msg_container = st.container(border=True, height=800)
 
         ############################################################################
 
